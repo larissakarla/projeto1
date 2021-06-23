@@ -22,5 +22,57 @@ namespace projeto1.Controllers
         {
             return View(categorias);
         }
+
+        // GET: Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: CATEGORIAS CREATE
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Categoria categoria)
+        {
+            categorias.Add(categoria);
+            categoria.CategoriaId = categorias.Select(m => m.CategoriaId).Max() + 1;
+            return RedirectToAction("Index");
+        }
+
+        // GET: CATEGORIAS Edit
+        public ActionResult Edit(long id)
+        {
+            return View(categorias.Where(m => m.CategoriaId == id).First());
+        }
+
+        // POST: CATEGORIAS Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Categoria categoria)
+        {
+            categorias.Remove(
+            categorias.Where(c => c.CategoriaId == categoria.CategoriaId).First());
+            categorias.Add(categoria);
+            return RedirectToAction("Index");
+        }
+
+        // GET: CATEGORIAS Details
+        public ActionResult Details(long id)
+        {
+            return View(categorias.Where(m => m.CategoriaId == id).First());
+        }
+
+        public ActionResult Delete(long id)
+        {
+            return View(categorias.Where(m => m.CategoriaId == id).First());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(Categoria categoria)
+        {
+            categorias.Remove(categorias.Where(c => c.CategoriaId == categoria.CategoriaId).First());
+            return RedirectToAction("Index");
+        }
     }
 }
