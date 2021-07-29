@@ -17,7 +17,7 @@ namespace projeto1
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Categorias", action = "Index", id = UrlParameter.Optional }
-            );
+                );
         }
     }
 }
