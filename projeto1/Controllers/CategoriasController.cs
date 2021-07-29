@@ -73,6 +73,7 @@ namespace projeto1.Controllers
         public ActionResult Delete(Categoria categoria)
         {
             categorias.Remove(categorias.Where(c => c.CategoriaId == categoria.CategoriaId).First());
+            TempData["Message"] = "Categoria " + categoria.Nome.ToUpper() + " foi removido";
             return RedirectToAction("Index");
         }
     }
