@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity;
 using projeto1.Models;
+using System.Configuration;
 
 namespace projeto1.Context
 {
