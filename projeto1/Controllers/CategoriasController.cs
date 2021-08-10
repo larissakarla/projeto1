@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using projeto1.Models;
+using Modelo.Tabelas;
+
 
 namespace projeto1.Controllers
 {
