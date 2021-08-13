@@ -1,28 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Modelo.Tabelas;
-
+using Servico.Tabelas;
 
 namespace projeto1.Controllers
 {
     public class CategoriasController : Controller
     {
-        private static IList<Categoria> categorias = new List<Categoria>()
-    {
-         new Categoria() { CategoriaId = 1, Nome = "Notebooks"},
-         new Categoria() { CategoriaId = 2, Nome = "Monitores"},
-         new Categoria() { CategoriaId = 3, Nome = "Impressoras"},
-         new Categoria() { CategoriaId = 4, Nome = "Mouses"},
-         new Categoria() { CategoriaId = 5, Nome = "Desktops"}
-    };
-        
+        private CategoriaServico categoriaServico = new CategoriaServico();
+        private ActionResult ObterVisaoCategoriaPorId(long? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Categoria categoria = categoriaServico.ObterCategoriaPorId((long)id);
+            if (categoria == null)
+            {
+                return HttpNotFound();
+            }
+            return View(categoria);
+        }
+
+        private ActionResult GravarCategoria(Categoria categoria)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    categoriaServico.GravarCategoria(categoria);
+                    return RedirectToAction("Index");
+                }
+                return View(categoria);
+            }
+            catch
+            {
+                return View(categoria);
+            }
+        }
+//-------------------------------------------------------------------------------------------------------//
+
         // GET: Categorias
         public ActionResult Index()
         {
-            return View(categorias);
+            return View(categoriaServico.ObterCategoriasClassificadasPorNome());
         }
 
         // GET: Create
@@ -36,15 +61,13 @@ namespace projeto1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Categoria categoria)
         {
-            categorias.Add(categoria);
-            categoria.CategoriaId = categorias.Select(m => m.CategoriaId).Max() + 1;
-            return RedirectToAction("Index");
+            return GravarCategoria(categoria);
         }
 
         // GET: CATEGORIAS Edit
-        public ActionResult Edit(long id)
+        public ActionResult Edit(long? id)
         {
-            return View(categorias.Where(m => m.CategoriaId == id).First());
+            return ObterVisaoCategoriaPorId(id);
         }
 
         // POST: CATEGORIAS Edit
@@ -52,30 +75,36 @@ namespace projeto1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Categoria categoria)
         {
-            categorias.Remove(
-            categorias.Where(c => c.CategoriaId == categoria.CategoriaId).First());
-            categorias.Add(categoria);
-            return RedirectToAction("Index");
+            return GravarCategoria(categoria);
         }
 
         // GET: CATEGORIAS Details
-        public ActionResult Details(long id)
+        public ActionResult Details(long? id)
         {
-            return View(categorias.Where(m => m.CategoriaId == id).First());
+            return ObterVisaoCategoriaPorId(id);
         }
 
-        public ActionResult Delete(long id)
+        // GET: Delete
+        public ActionResult Delete(long? id)
         {
-            return View(categorias.Where(m => m.CategoriaId == id).First());
+            return ObterVisaoCategoriaPorId(id);
         }
 
+        // POST: Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Categoria categoria)
+        public ActionResult Delete(long id)
         {
-            categorias.Remove(categorias.Where(c => c.CategoriaId == categoria.CategoriaId).First());
-            TempData["Message"] = "Categoria " + categoria.Nome.ToUpper() + " foi removido";
-            return RedirectToAction("Index");
+            try
+            {
+                Categoria categoria = categoriaServico.EliminarCategoriaPorId(id);
+                TempData["Message"] = "Categoria " + categoria.Nome.ToUpper() + " foi removida";
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
 }
