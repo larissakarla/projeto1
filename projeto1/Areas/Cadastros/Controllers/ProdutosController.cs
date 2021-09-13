@@ -9,7 +9,7 @@ using Servico.Cadastros;
 using Servico.Tabelas;
 using System.Net;
 
-namespace projeto1.Controllers
+namespace projeto1.Areas.Cadastros.Controllers
 {
     public class ProdutosController : Controller
     {

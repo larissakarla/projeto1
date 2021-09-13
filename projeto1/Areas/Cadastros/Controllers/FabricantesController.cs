@@ -10,7 +10,7 @@ using Servico.Cadastros;
 //using projeto1.Context;
 
 
-namespace projeto1.Controllers
+namespace projeto1.Areas.Cadastros.Controllers
 {
     public class FabricantesController : Controller
     {

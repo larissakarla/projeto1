@@ -1,11 +1,11 @@
 ﻿@Model Modelo.Tabelas.Categoria
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Visualizando detalhes de uma CATEGORIA";
+    ViewBag.Title = "Visualizando detalhes de um USUARIO";
 }
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Visualizando detalhes de uma CATEGORIA
+        Visualizando detalhes de um USUARIO
     </div>
     <div class="panel-body">
         <div class="form-group">
@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="panel-footer panel-info">
-        @Html.ActionLink("Alterar", "Edit", new { id = Model.CategoriaId },
+        @Html.ActionLink("Alterar", "Edit", new { id = Model.UsuarioId },
         new { @class = "btn btn-info" })
         @Html.ActionLink("Retornar para a listagem", "Index", null,
         new { @class = "btn btn-info" })

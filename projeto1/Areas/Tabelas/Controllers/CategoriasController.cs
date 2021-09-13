@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using Modelo.Tabelas;
 using Servico.Tabelas;
 
-namespace projeto1.Controllers
+namespace projeto1.Areas.Tabelas.Controllers
 {
     public class CategoriasController : Controller
     {
