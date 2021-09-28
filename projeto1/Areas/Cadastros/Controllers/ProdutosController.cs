@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Servico.Cadastros;
 using Servico.Tabelas;
 using System.Net;
+using System.IO;
 
 namespace projeto1.Areas.Cadastros.Controllers
 {
@@ -46,12 +47,23 @@ namespace projeto1.Areas.Cadastros.Controllers
             }
         }
 
-        private ActionResult GravarProduto(Produto produto)
+        private ActionResult GravarProduto(Produto produto, HttpPostedFileBase logotipo, string chkRemoverImagem)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    if (chkRemoverImagem != null)
+                    {
+                        produto.Logotipo = null;
+                    }
+                    if (logotipo != null)
+                    {
+                        produto.LogotipoMimeType = logotipo.ContentType;
+                        produto.Logotipo = SetLogotipo(logotipo);
+                        produto.NomeArquivo = logotipo.FileName;
+                        produto.TamanhoArquivo = logotipo.ContentLength;
+                    }
                     produtoServico.GravarProduto(produto);
                     return RedirectToAction("Index");
                 }
@@ -60,8 +72,16 @@ namespace projeto1.Areas.Cadastros.Controllers
             }
             catch
             {
+                PopularViewBag(produto);
                 return View(produto);
             }
+        }
+
+        private byte[] SetLogotipo(HttpPostedFileBase logotipo)
+        {
+            var bytesLogotipo = new byte[logotipo.ContentLength];
+            logotipo.InputStream.Read(bytesLogotipo, 0, logotipo.ContentLength);
+            return bytesLogotipo;
         }
 
         //-----------------------------------------------------------------------------------------------------------//
@@ -103,9 +123,9 @@ namespace projeto1.Areas.Cadastros.Controllers
 
         // POST: Produtos/Edit/5
         [HttpPost]
-        public ActionResult Edit(Produto produto)
+        public ActionResult Edit(Produto produto, HttpPostedFileBase logotipo = null, string chkRemoverImagem = null)
         {
-            return GravarProduto(produto);
+            return GravarProduto(produto, logotipo, chkRemoverImagem);
         }
 
         // GET: Produtos/Delete/5
@@ -128,6 +148,25 @@ namespace projeto1.Areas.Cadastros.Controllers
             {
                 return View();
             }
+        }
+
+        public FileContentResult GetLogotipo(long id)
+        {
+            Produto produto = produtoServico.ObterProdutoPorId(id);
+            if (produto != null)
+            {
+                return File(produto.Logotipo, produto.LogotipoMimeType);
+            }
+            return null;
+        }
+
+        public ActionResult DownloadArquivo(long id)
+        {
+            Produto produto = produtoServico.ObterProdutoPorId(id);
+            FileStream fileStream = new FileStream(Server.MapPath("~/App_Data/" + produto.NomeArquivo), FileMode.Create, FileAccess.Write);
+            fileStream.Write(produto.Logotipo, 0, Convert.ToInt32(produto.TamanhoArquivo));
+            fileStream.Close();
+            return File(fileStream.Name, produto.LogotipoMimeType, produto.NomeArquivo);
         }
     }
 }
