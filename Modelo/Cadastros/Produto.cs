@@ -29,5 +29,18 @@ namespace Modelo.Cadastros
         public byte[] Logotipo { get; set; }
         public string NomeArquivo { get; set; }
         public long TamanhoArquivo { get; set; }
+
+        [DisplayName("Preço")]
+        public double Preco { get; set; }
+
+        [DisplayName("Promoção")]
+        public bool Promocao { get; set; }
+
+        [DisplayName("Desconto")]
+        public long Desconto { get; set; }
+
+        [DisplayName("Lançamento")]
+        public bool Lancamento { get; set; }
+
     }
 }
